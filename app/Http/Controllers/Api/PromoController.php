@@ -49,7 +49,7 @@ class PromoController extends Controller
     {
         $storeData = $request->all();
         $validate = Validator::make($storeData, [
-            'kode_promo' => 'required|unique',
+            'kode_promo' => 'required|unique:promos',
             'jenis_promo' => 'required',
             'besar_diskon_promo' => 'required',
             'status_promo' => 'required',

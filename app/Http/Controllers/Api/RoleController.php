@@ -86,9 +86,9 @@ class RoleController extends Controller
         ], 400); // return message saat gagal menghapus data role
     }
 
-    public function update(Request $request, $id_role)
+    public function update(Request $request, $id)
     {
-        $role = Role::find($id_role);
+        $role = Role::find($id);
 
         if (is_null($role)) {
             return response([

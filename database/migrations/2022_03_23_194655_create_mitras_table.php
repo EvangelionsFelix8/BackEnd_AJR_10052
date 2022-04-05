@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('no_ktp_mitra', 30);
             $table->string('alamat_mitra');
             $table->string('no_telp_mitra', 30);
+            $table->boolean('isAktif');
             $table->timestamps();
         });
     }

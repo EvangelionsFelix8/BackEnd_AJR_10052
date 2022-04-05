@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('no_telp_pegawai', 30);
             $table->string('password_pegawai', 30);
             $table->string('url_foto_pegawai');
+            $table->boolean('isAktif');
             $table->timestamps();
         });
     }

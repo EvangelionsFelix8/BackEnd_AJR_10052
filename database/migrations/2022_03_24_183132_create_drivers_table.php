@@ -33,6 +33,7 @@ return new class extends Migration
             $table->string('berkas_sehat_jasmani');
             $table->string('berkas_skck');
             $table->double('rerata_rating_driver');
+            $table->boolean('isAktif');
             $table->timestamps();
         });
     }
