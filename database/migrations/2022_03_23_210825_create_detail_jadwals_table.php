@@ -14,6 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('detail_jadwals', function (Blueprint $table) {
+            $table->id('id_detail_jadwal');
             $table->bigInteger('id_jadwal')->unsigned();
             $table->foreign('id_jadwal')->references('id_jadwal')->on('jadwals');
             $table->bigInteger('id_pegawai')->unsigned();

@@ -13,7 +13,7 @@ class Mitra extends Model
     protected $primaryKey = 'id_mitra';
 
     protected $fillable = [
-        'nama_mitra', 'no_ktp_mitra', 'alamat_mitra', 'no_telp_mitra'
+        'nama_mitra', 'no_ktp_mitra', 'alamat_mitra', 'no_telp_mitra', 'isAktif',
     ];
 
     public function getCreatedAtAttribute()

@@ -22,6 +22,7 @@ class Pegawai extends Model
         'no_telp_pegawai',
         'password_pegawai',
         'url_foto_pegawai',
+        'isAktif',
     ];
 
     public function getCreatedAtAttribute()

@@ -7,13 +7,42 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
 use App\Models\DetailJadwal;
+use Illuminate\Support\Facades\DB;
 
 class DetailJadwalController extends Controller
 {
     // method untuk menampilkan semua data product (read)
+    // public function index()
+    // {
+    //     $detailjadwals = DetailJadwal::with(['Pegawai', 'Jadwal'])->get();
+    //     // $detailjadwals = DetailJadwal::all();
+
+    //     if (count($detailjadwals) > 0) {
+    //         return response([
+    //             'message' => 'Retrieve All Success',
+    //             'data' => $detailjadwals
+    //         ], 200); // return data semua detailjadwal dalam bentuk json
+    //     }
+
+    //     return response([
+    //         'message' => 'Empty',
+    //         'data' => null
+    //     ], 400); // return message data detailjadwal kosong
+    // }
+
+    // method untuk menampilkan semua data product (read)
     public function index()
     {
-        $detailjadwals = DetailJadwal::with(['Pegawai', 'Jadwal'])->get();
+        $detailjadwals = DB::table('detail_jadwals')
+
+            ->join('jadwals', 'jadwals.id_jadwal', '=', 'detail_jadwals.id_jadwal')
+            ->join('pegawais', 'pegawais.id_pegawai', '=', 'detail_jadwals.id_pegawai')
+            ->join('roles', 'roles.id_role', '=', 'pegawais.id_role')
+            ->selectRaw('count(id_pegawai) as count_pegawai')
+            ->select('hari_kerja', 'shift', 'nama_pegawai', 'nama_role')
+            // ->groupBy('id_pegawai')
+            ->orderBy('hari_kerja', 'desc')->orderBy('shift', 'asc')
+            ->get();
         // $detailjadwals = DetailJadwal::all();
 
         if (count($detailjadwals) > 0) {
@@ -50,7 +79,8 @@ class DetailJadwalController extends Controller
     {
         $storeData = $request->all(); //Mengambil semua input dari API Client
         $validate = Validator::make($storeData, [
-            'nama_role' => 'required|unique:detailjadwals|regex:/^[\pL\s\-]+$/u',
+            'id_jadwal' => 'required',
+            'id_pegawai' => 'required',
         ]); //Membuat rule validasi input
 
         if ($validate->fails()) {
@@ -100,13 +130,15 @@ class DetailJadwalController extends Controller
 
         $updateData = $request->all();
         $validate = Validator::make($updateData, [
-            'nama_role' => ['required', Rule::unique('detailjadwals')->ignore($detailjadwal)],
+            'id_jadwal' => 'required',
+            'id_pegawai' => 'required',
         ]);
 
         if ($validate->fails())
             return response(['message' => $validate->errors()], 400);
 
-        $detailjadwal->nama_role = $updateData['nama_role'];
+        $detailjadwal->id_jadwal = $updateData['id_jadwal'];
+        $detailjadwal->id_pegawai = $updateData['id_pegawai'];
 
         if ($detailjadwal->save()) {
             return response([

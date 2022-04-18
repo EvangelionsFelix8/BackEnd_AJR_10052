@@ -28,6 +28,24 @@ class PromoController extends Controller
         ], 400); // return message data promo kosong
     }
 
+    // method untuk menampilkan semua data product (read)
+    public function showByStatus()
+    {
+        $promos = Promo::where('status_promo', 'Aktif')->get();
+
+        if (count($promos) > 0) {
+            return response([
+                'message' => 'Retrieve All Success',
+                'data' => $promos
+            ], 200); // return data semua promo dalam bentuk json
+        }
+
+        return response([
+            'message' => 'Empty',
+            'data' => null
+        ], 400); // return message data promo kosong
+    }
+
     public function show($id)
     {
         $promo = Promo::find($id);

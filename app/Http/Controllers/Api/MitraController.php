@@ -28,6 +28,23 @@ class MitraController extends Controller
         ], 400); // return message data mitra kosong
     }
 
+    public function mitraByStatus()
+    {
+        $mitras = Mitra::where('isAktif', 1)->get();
+
+        if (count($mitras) > 0) {
+            return response([
+                'message' => 'Retrieve All Success',
+                'data' => $mitras
+            ], 200); // return data semua mitra dalam bentuk json
+        }
+
+        return response([
+            'message' => 'Empty',
+            'data' => null
+        ], 400); // return message data mitra kosong
+    }
+
     public function show($id)
     {
         $mitra = Mitra::find($id);
@@ -53,6 +70,7 @@ class MitraController extends Controller
             'no_ktp_mitra' => 'required|numeric',
             'alamat_mitra' => 'required',
             'no_telp_mitra' => 'required|numeric|starts_with:08',
+            'isAktif' => 'required',
         ]); // membuat rule validasi input
 
         if ($validate->fails())
@@ -107,6 +125,7 @@ class MitraController extends Controller
             'no_ktp_mitra' => 'required|numeric',
             'alamat_mitra' => 'required',
             'no_telp_mitra' => 'required|numeric|starts_with:08',
+            'isAktif' => 'required',
         ]);
 
         if ($validate->fails())
@@ -116,6 +135,7 @@ class MitraController extends Controller
         $mitra->no_ktp_mitra = $updateData['no_ktp_mitra'];
         $mitra->alamat_mitra = $updateData['alamat_mitra'];
         $mitra->no_telp_mitra = $updateData['no_telp_mitra'];
+        $mitra->isAktif = $updateData['isAktif'];
 
         if ($mitra->save()) {
             return response([

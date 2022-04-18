@@ -33,6 +33,7 @@ class Driver extends Model
         'berkas_sehat_jasmani',
         'berkas_skck',
         'rerata_rating_driver',
+        'isAktif',
     ];
 
     public function getCreatedAtAttribute()

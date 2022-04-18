@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('mobils', function (Blueprint $table) {
             $table->id('id_mobil');
-            $table->bigInteger('id_mitra')->unsigned();
+            $table->bigInteger('id_mitra')->unsigned()->nullable();
             $table->foreign('id_mitra')->references('id_mitra')->on('mitras');
             $table->string('nama_mobil', 30);
             $table->string('tipe_mobil', 30);
