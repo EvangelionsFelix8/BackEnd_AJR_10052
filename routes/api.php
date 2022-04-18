@@ -30,9 +30,9 @@ Route::delete('promo/{id_promo}', 'Api\PromoController@destroy');
 Route::post('detailjadwal', 'Api\DetailJadwalController@store');
 Route::get('detailjadwal', 'Api\DetailJadwalController@index');
 // Route::get('detailjadwal', 'Api\DetailJadwalController@getJadwalWithPegawai');
-Route::get('detailjadwal/{id_promo}', 'Api\PromoController@show');
-Route::put('detailjadwal/{id_promo}', 'Api\PromoController@update');
-Route::delete('detailjadwal/{id_promo}', 'Api\PromoController@destroy');
+Route::get('detailjadwal/{id_detail_jadwal}', 'Api\DetailJadwalController@show');
+Route::put('detailjadwal/{id_detail_jadwal}', 'Api\DetailJadwalController@update');
+Route::delete('detailjadwal/{id_detail_jadwal}', 'Api\DetailJadwalController@destroy');
 
 Route::post('jadwal', 'Api\JadwalController@store');
 Route::get('jadwal', 'Api\JadwalController@index');

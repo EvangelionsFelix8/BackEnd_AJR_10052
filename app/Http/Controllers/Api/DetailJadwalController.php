@@ -38,8 +38,8 @@ class DetailJadwalController extends Controller
             ->join('jadwals', 'jadwals.id_jadwal', '=', 'detail_jadwals.id_jadwal')
             ->join('pegawais', 'pegawais.id_pegawai', '=', 'detail_jadwals.id_pegawai')
             ->join('roles', 'roles.id_role', '=', 'pegawais.id_role')
-            ->selectRaw('count(id_pegawai) as count_pegawai')
-            ->select('hari_kerja', 'shift', 'nama_pegawai', 'nama_role')
+            // ->selectRaw('count(id_pegawai) as count_pegawai')
+            ->select('id_detail_jadwal', 'pegawais.id_pegawai', 'jadwals.id_jadwal', 'hari_kerja', 'shift', 'nama_pegawai', 'nama_role')
             // ->groupBy('id_pegawai')
             ->orderBy('hari_kerja', 'desc')->orderBy('shift', 'asc')
             ->get();
@@ -93,20 +93,20 @@ class DetailJadwalController extends Controller
         ], 200); //Return message data detailjadwal baru dalam bentuk JSON
     }
 
-    public function destroy($id_role)
+    public function destroy($id)
     {
-        $detailjadwal = DetailJadwal::find($id_role);
+        $detailjadwal = DetailJadwal::find($id);
 
         if (is_null($detailjadwal)) {
             return response([
-                'message' => 'DetailJadwal Not Found',
+                'message' => 'Detail Jadwal Not Found',
                 'data' => null
             ], 404); // Return message saat data tidak ditemukan
         }
 
         if ($detailjadwal->delete()) {
             return response([
-                'message' => 'Delete DetailJadwal Success',
+                'message' => 'Delete Detail Jadwal Success',
                 'data' => $detailjadwal
             ], 200);
         } // return message saat berhasil menghapus data detailjadwal
@@ -117,9 +117,9 @@ class DetailJadwalController extends Controller
         ], 400); // return message saat gagal menghapus data detailjadwal
     }
 
-    public function update(Request $request, $id_role)
+    public function update(Request $request, $id)
     {
-        $detailjadwal = DetailJadwal::find($id_role);
+        $detailjadwal = DetailJadwal::find($id);
 
         if (is_null($detailjadwal)) {
             return response([

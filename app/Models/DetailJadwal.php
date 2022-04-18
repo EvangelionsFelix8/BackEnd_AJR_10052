@@ -10,6 +10,7 @@ class DetailJadwal extends Model
 {
     use HasFactory;
 
+    protected $primaryKey = 'id_detail_jadwal';
     protected $fillable = [
         'id_jadwal', 'id_pegawai',
     ];
