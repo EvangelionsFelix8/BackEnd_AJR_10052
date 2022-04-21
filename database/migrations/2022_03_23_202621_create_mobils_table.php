@@ -31,8 +31,8 @@ return new class extends Migration
             $table->string('status_ketersediaan', 30);
             $table->string('url_foto_mobil');
             $table->string('fasilitas');
-            $table->date('mulai_kontrak');
-            $table->date('selesai_kontrak');
+            $table->date('mulai_kontrak')->nullable();
+            $table->date('selesai_kontrak')->nullable();
             $table->date('tanggal_servis_terakhir');
             $table->timestamps();
         });

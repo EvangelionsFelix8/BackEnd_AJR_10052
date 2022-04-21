@@ -22,10 +22,9 @@ return new class extends Migration
             $table->string('email_customer')->unique();
             $table->string('password');
             $table->string('no_telp_customer', 30);
-            $table->string('berkas_customer');
             $table->string('status_berkas');
             $table->string('no_tanda_pengenal');
-            $table->string('no_sim');
+            $table->string('no_sim')->nullable();
             $table->timestamps();
         });
     }

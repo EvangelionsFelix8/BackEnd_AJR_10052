@@ -17,7 +17,9 @@ class MobilController extends Controller
     // method untuk menampilkan semua data product (read)
     public function index()
     {
-        $mobils = Mobil::all();
+        // $mobils = Mobil::all();
+        $from = Carbon::now()->format('ymd');
+        $mobils = Mobil::selectRaw("*, DATEDIFF(mobils.selesai_kontrak, $from) as sisa_hari")->get();
 
         if (count($mobils) > 0) {
             return response([
@@ -53,9 +55,16 @@ class MobilController extends Controller
     public function getmobilbyexpiredsoon()
     {
         $from = Carbon::now()->format('ymd');
-        $mobils = DB::table('mobils')
+        // $mobils = Mobil::selectRaw("mobils.url_foto_mobil, mobils.nama_mobil, mitras.nama_mitra, DATEDIFF(mobils.selesai_kontrak, $from) as sisa_hari")
+        //     ->join('mitras', 'mitras.id_mitra', '=', 'mobils.id_mitra')
+        //     ->whereRaw("DATEDIFF(mobils.selesai_kontrak, $from) < 30")
+        //     ->where('mobils.id_mitra', '!=', 'NULL')
+        //     ->get();
+
+        $mobils = Mobil::selectRaw("*, DATEDIFF(mobils.selesai_kontrak, $from) as sisa_hari")
+            ->join('mitras', 'mitras.id_mitra', '=', 'mobils.id_mitra')
             ->whereRaw("DATEDIFF(mobils.selesai_kontrak, $from) < 30")
-            ->where('id_mitra', '!=', 'NULL')
+            ->where('mobils.id_mitra', '!=', 'NULL')
             ->get();
 
         if (count($mobils) > 0) {
@@ -123,13 +132,14 @@ class MobilController extends Controller
             'status_ketersediaan',
             'url_foto_mobil' => 'required|max:1024|mimes:jpg,png,jpeg|image',
             'fasilitas' => 'required',
-            'mulai_kontrak' => 'required',
-            'selesai_kontrak' => 'required',
+            // 'mulai_kontrak' => 'required',
+            // 'selesai_kontrak' => 'required',
             'tanggal_servis_terakhir' => 'required',
         ]); // membuat rule validasi input
 
         if ($validate->fails())
             return response(['message' => $validate->errors()], 400);
+
         if (($request->id_mitra) === NULL) {
             $jenis_aset = sprintf("0");
         } else {
@@ -213,8 +223,8 @@ class MobilController extends Controller
             'status_ketersediaan' => 'required',
             // 'url_foto_mobil' => 'required',
             'fasilitas' => 'required',
-            'mulai_kontrak' => 'required',
-            'selesai_kontrak' => 'required',
+            // 'mulai_kontrak' => 'required',
+            // 'selesai_kontrak' => 'required',
             'tanggal_servis_terakhir' => 'required'
         ]);
 

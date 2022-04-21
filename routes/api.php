@@ -76,6 +76,7 @@ Route::post('customer', 'Api\CustomerController@store');
 Route::get('customer', 'Api\CustomerController@index');
 Route::get('customer/{id_customer}', 'Api\CustomerController@show');
 Route::put('customer/{id_customer}', 'Api\CustomerController@update');
+Route::post('updateberkascustomer/{id_customer}', 'Api\CustomerController@updateBerkas');
 Route::delete('customer/{id_customer}', 'Api\CustomerController@destroy');
 
 Route::post('transaksi', 'Api\TransaksiController@store');

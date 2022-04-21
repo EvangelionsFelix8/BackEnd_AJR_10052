@@ -56,17 +56,26 @@ class CustomerController extends Controller
             'tanggal_lahir_customer' => 'required',
             'jenis_kelamin' => 'required',
             'email_customer' => 'required|email:rfc,dns|unique:Customers',
-            'password' => 'required',
+            // 'password' => 'required',
             'no_telp_customer' => 'required|numeric|starts_with:08',
-            'berkas_customer' => 'required',
-            'status_berkas' => 'required',
-            'no_tanda_pengenal' => 'required',
-            'no_sim' => 'required',
+            // 'status_berkas' => 'required',
+            'no_tanda_pengenal' => 'required|max:1024|mimes:jpg,png,jpeg|image',
+            // 'no_sim' => 'max:1024|mimes:jpg,png,jpeg|image',
         ]); //Membuat rule validasi input
 
         if ($validate->fails()) {
             return response(['message' => $validate->errors()], 400); //Return error invalid input
         }
+
+        $fotoTandaPengenal = $request->no_tanda_pengenal->store('foto_tanda_pengenal', ['disk' => 'public']);
+        if (isset($request->no_sim)) {
+            $fotoSim = $request->no_sim->store('foto_sim', ['disk' => 'public']);
+        } else {
+            $fotoSim = NULL;
+        }
+        // $fotoSim = $request->no_sim->store('foto_sim', ['disk' => 'public']);
+        // $fotoSim = $request->no_sim->store('foto_sim', ['disk' => 'public']);
+
         $count = DB::table('customers')->count() + 1;
         $id_generate = sprintf("%03d", $count);
         $datenow = Carbon::now()->format('ymd');
@@ -77,16 +86,15 @@ class CustomerController extends Controller
             'tanggal_lahir_customer' => $request->tanggal_lahir_customer,
             'jenis_kelamin' => $request->jenis_kelamin,
             'email_customer' => $request->email_customer,
-            'password' => $request->password,
+            'password' => bcrypt($request->tanggal_lahir_customer),
             'no_telp_customer' => $request->no_telp_customer,
-            'berkas_customer' => $request->berkas_customer,
-            'status_berkas' => $request->status_berkas,
-            'no_tanda_pengenal' => $request->no_tanda_pengenal,
-            'no_sim' => $request->no_sim,
+            'status_berkas' => 'Not Verified',
+            'no_tanda_pengenal' => $fotoTandaPengenal,
+            'no_sim' => $fotoSim,
         ]);
 
         return response([
-            'message' => 'Add Customer Success',
+            'message' => 'Berhasil melakukan Registrasi Akun',
             'data' => $Customer
         ], 200); //Return message data Customer baru dalam bentuk JSON
     }
@@ -111,10 +119,8 @@ class CustomerController extends Controller
             'email_customer' => ['required', 'email:rfc,dns', Rule::unique('customers')->ignore($customer)],
             'password' => 'required',
             'no_telp_customer' => 'required|numeric|starts_with:08',
-            'berkas_customer' => 'required',
-            'status_berkas' => 'required',
-            'no_tanda_pengenal' => 'required',
-            'no_sim' => 'required',
+            'no_tanda_pengenal' => 'max:1024|mimes:jpg,png,jpeg|image',
+            'no_sim' => 'max:1024|mimes:jpg,png,jpeg|image',
         ]);
 
         if ($validate->fails())
@@ -127,14 +133,52 @@ class CustomerController extends Controller
         $customer->email_customer = $updateData['email_customer'];
         $customer->password = $updateData['password'];
         $customer->no_telp_customer = $updateData['no_telp_customer'];
-        $customer->berkas_customer = $updateData['berkas_customer'];
         $customer->status_berkas = $updateData['status_berkas'];
-        $customer->no_tanda_pengenal = $updateData['no_tanda_pengenal'];
-        $customer->no_sim = $updateData['no_sim'];
+
+        if (isset($request->no_tanda_pengenal)) {
+            $fotoTandaPengenal = $request->no_tanda_pengenal->store('foto_tanda_pengenal', ['disk' => 'public']);
+            $customer->no_tanda_pengenal = $fotoTandaPengenal;
+        }
+        // $customer->no_tanda_pengenal = $updateData['no_tanda_pengenal'];
+        if (isset($request->no_sim)) {
+            $fotoSim = $request->no_sim->store('foto_sim', ['disk' => 'public']);
+            $customer->no_sim = $fotoSim;
+        }
+        // $customer->no_sim = $updateData['no_sim'];
 
         if ($customer->save()) {
             return response([
                 'message' => 'Update Customer Success',
+                'data' => $customer
+            ], 200);
+        }
+
+        return response([
+            'message' => 'Update Customer Failed',
+            'data' => null,
+        ], 400); // return message saat detailjadwal gagal di edit
+    }
+
+    public function updateBerkas(Request $request, $id)
+    {
+        $customer = Customer::find($id);
+
+        if (is_null($customer)) {
+            return response([
+                'message' => 'Customer Not Found',
+                'data' => null
+            ], 404); // Return message saat data tidak ditemukan
+        }
+
+        $updateData = $request->all();
+        // if (isset($request->status_berkas)) {
+        $customer->status_berkas = $updateData['status_berkas'];
+        // }
+
+
+        if ($customer->save()) {
+            return response([
+                'message' => 'Berhasil Verifikasi Berkas Customer',
                 'data' => $customer
             ], 200);
         }

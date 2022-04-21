@@ -22,7 +22,6 @@ class Customer extends Model
         'email_customer',
         'password',
         'no_telp_customer',
-        'berkas_customer',
         'status_berkas',
         'no_tanda_pengenal',
         'no_sim',
