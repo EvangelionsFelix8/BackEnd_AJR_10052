@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Jadwal;
+use Illuminate\Support\Facades\DB;
 
 class JadwalController extends Controller
 {
@@ -48,10 +49,31 @@ class JadwalController extends Controller
     public function store(Request $request)
     {
         $storeData = $request->all();
+
+        $checkUnique = DB::table('jadwals')
+            ->select('hari_kerja', 'shift')
+            ->whereRaw("hari_kerja = '$request->hari_kerja' && shift= $request->shift")
+            ->get()
+            ->first();
+
+        $temp_error = 'Pilihan Jadwal Sudah Ada';
+        if ($checkUnique != null) {
+            return response(['message' => $temp_error], 400);
+        }
+
         $validate = Validator::make($storeData, [
             'hari_kerja' => 'required',
             'shift' => 'required',
+        ], [], [
+            'hari_kerja' => 'Hari Kerja',
+            'shift' => 'Shift',
         ]); // membuat rule validasi input
+
+        $err_message = array(array('Pastikan Field Terisi Semuanya'));
+
+        if ($request->hari_kerja === 'null' || $request->shift === 'null') {
+            return response(['message' => $err_message], 400);
+        }
 
         if ($validate->fails())
             return response(['message' => $validate->errors()], 400);
@@ -92,6 +114,17 @@ class JadwalController extends Controller
     {
         $jadwal = Jadwal::find($id);
 
+        $checkUnique = DB::table('jadwals')
+            ->select('hari_kerja', 'shift')
+            ->whereRaw("hari_kerja = '$request->hari_kerja' && shift= $request->shift")
+            ->get()
+            ->first();
+
+        $temp_error = 'Pilihan Jadwal Sudah Ada';
+        if ($checkUnique != null) {
+            return response(['message' => $temp_error], 400);
+        }
+
         if (is_null($jadwal)) {
             return response([
                 'message' => 'Jadwal Not Found',
@@ -101,9 +134,18 @@ class JadwalController extends Controller
 
         $updateData = $request->all();
         $validate = Validator::make($updateData, [
-            'hari_kerja' => ['required', Rule::unique('jadwals')->ignore($jadwal)],
+            'hari_kerja' => 'required',
             'shift' => 'required',
+        ], [], [
+            'hari_kerja' => 'Hari Kerja',
+            'shift' => 'Shift',
         ]);
+
+        $err_message = array(array('Pastikan Field Terisi Semuanya'));
+
+        if ($updateData['hari_kerja'] === 'null' || $updateData['shift'] === 'null') {
+            return response(['message' => $err_message], 400);
+        }
 
         if ($validate->fails())
             return response(['message' => $validate->errors()], 400);

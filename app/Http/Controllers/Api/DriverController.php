@@ -84,27 +84,61 @@ class DriverController extends Controller
     public function store(Request $request)
     {
         $storeData = $request->all(); //Mengambil semua input dari API Client
-        $validate = Validator::make($storeData, [
-            'nama_driver' => 'required|regex:/^[\pL\s\-]+$/u',
-            'alamat_driver' => 'required',
-            'email_driver' => 'required|email:rfc,dns|unique:Drivers',
-            'status_ketersediaan_driver' => 'required|regex:/^[\pL\s\-]+$/u',
-            // 'status_berkas' => 'required|regex:/^[\pL\s\-]+$/u',
-            'isEnglish' => 'required',
-            'tanggal_lahir_driver' => 'required',
-            'jenis_kelamin' => 'required|regex:/^[\pL\s\-]+$/u',
-            'no_telp_driver' => 'required|numeric|starts_with:08',
-            'url_foto_driver' => 'required|max:1024|mimes:jpg,png,jpeg|image',
-            'password',
-            'tarif_sewa_driver' => 'required|numeric',
-            'berkas_bebas_napza' => 'required|max:1024|mimes:jpg,png,jpeg|image',
-            'berkas_sim' => 'required|max:1024|mimes:jpg,png,jpeg|image',
-            'berkas_sehat_jiwa' => 'required|max:1024|mimes:jpg,png,jpeg|image',
-            'berkas_sehat_jasmani' => 'required|max:1024|mimes:jpg,png,jpeg|image',
-            'berkas_skck' => 'required|max:1024|mimes:jpg,png,jpeg|image',
-            // 'rerata_rating_driver' => 'required|numeric',
-            'isAktif' => 'required',
-        ]); //Membuat rule validasi input
+        $validate = Validator::make(
+            $storeData,
+            [
+                'nama_driver' => 'required|regex:/^[\pL\s\-]+$/u',
+                'alamat_driver' => 'required',
+                'email_driver' => 'required|email:rfc,dns|unique:Drivers',
+                'status_ketersediaan_driver' => 'required|regex:/^[\pL\s\-]+$/u',
+                // 'status_berkas' => 'required|regex:/^[\pL\s\-]+$/u',
+                'isEnglish' => 'required',
+                'tanggal_lahir_driver' => 'required',
+                'jenis_kelamin' => 'required|regex:/^[\pL\s\-]+$/u',
+                'no_telp_driver' => 'required|numeric|starts_with:08',
+                'url_foto_driver' => 'required|max:1024|mimes:jpg,png,jpeg|image',
+                'password',
+                'tarif_sewa_driver' => 'required|numeric',
+                'berkas_bebas_napza' => 'required|max:1024|mimes:jpg,png,jpeg|image',
+                'berkas_sim' => 'required|max:1024|mimes:jpg,png,jpeg|image',
+                'berkas_sehat_jiwa' => 'required|max:1024|mimes:jpg,png,jpeg|image',
+                'berkas_sehat_jasmani' => 'required|max:1024|mimes:jpg,png,jpeg|image',
+                'berkas_skck' => 'required|max:1024|mimes:jpg,png,jpeg|image',
+                // 'rerata_rating_driver' => 'required|numeric',
+                'isAktif' => 'required',
+            ],
+            [],
+            [
+                'nama_driver' => 'Nama Driver',
+                'alamat_driver' => 'Alamat Driver',
+                'email_driver' => 'Email Driver',
+                'status_ketersediaan_driver' => 'Status Ketersediaan Driver',
+                'isEnglish' => 'Bahasa Inggris Driver',
+                'tanggal_lahir_driver' => 'Tanggal Lahir Driver',
+                'jenis_kelamin' => 'Jenis Kelamin',
+                'no_telp_driver' => 'Nomor Telepon',
+                'url_foto_driver' => 'Foto Driver',
+                'tarif_sewa_driver' => 'Tarif Sewa Driver',
+                'berkas_bebas_napza' => 'Berkas Bebas Napza',
+                'berkas_sim' => 'Berkas Sim',
+                'berkas_sehat_jiwa' => 'Berkas Sehat Jiwa',
+                'berkas_sehat_jasmani' => 'Berkas Sehat Jasmani',
+                'berkas_skck' => 'Berkas SKCK',
+                'isAktif' => 'Status Aktif',
+            ]
+        ); //Membuat rule validasi input
+
+        $err_message = array(array('Pastikan Field Terisi Semuanya'));
+
+        if (
+            $request->nama_driver === 'null' || $request->alamat_driver === 'null' || $request->email_driver === 'null' || $request->status_ketersediaan_driver === 'null' ||
+            $request->isEnglish === 'null' || $request->tanggal_lahir_driver === 'null' || $request->jenis_kelamin === 'null' ||
+            $request->no_telp_driver === 'null' || $request->tarif_sewa_driver === 'null' || $request->berkas_bebas_napza === 'null' ||
+            $request->berkas_sim === 'null' || $request->berkas_sehat_jiwa === 'null' || $request->berkas_sehat_jasmani === 'null' ||
+            $request->berkas_skck === 'null' || $request->isAktif === 'null' || $request->url_foto_driver === 'null'
+        ) {
+            return response(['message' => $err_message], 400);
+        }
 
         if ($validate->fails()) {
             return response(['message' => $validate->errors()], 400); //Return error invalid input
@@ -161,27 +195,59 @@ class DriverController extends Controller
         }
 
         $updateData = $request->all();
-        $validate = Validator::make($updateData, [
-            'nama_driver' => 'required|regex:/^[\pL\s\-]+$/u',
-            'alamat_driver' => 'required',
-            'email_driver' => ['required', 'email:rfc,dns', Rule::unique('drivers')->ignore($driver)],
-            'status_ketersediaan_driver' => 'required|regex:/^[\pL\s\-]+$/u',
-            // 'status_berkas' => 'required|regex:/^[\pL\s\-]+$/u',
-            'isEnglish' => 'required',
-            'tanggal_lahir_driver' => 'required',
-            'jenis_kelamin' => 'required|regex:/^[\pL\s\-]+$/u',
-            'no_telp_driver' => 'required|numeric|starts_with:08',
-            'url_foto_driver' => 'max:1024|mimes:jpg,png,jpeg|image',
-            'password',
-            'tarif_sewa_driver' => 'required|numeric',
-            'berkas_bebas_napza' => 'max:1024|mimes:jpg,png,jpeg|image',
-            'berkas_sim' => 'max:1024|mimes:jpg,png,jpeg|image',
-            'berkas_sehat_jiwa' => 'max:1024|mimes:jpg,png,jpeg|image',
-            'berkas_sehat_jasmani' => 'max:1024|mimes:jpg,png,jpeg|image',
-            'berkas_skck' => 'max:1024|mimes:jpg,png,jpeg|image',
-            // 'rerata_rating_driver' => 'required|numeric',
-            'isAktif' => 'required',
-        ]);
+        $validate = Validator::make(
+            $updateData,
+            [
+                'nama_driver' => 'required|regex:/^[\pL\s\-]+$/u',
+                'alamat_driver' => 'required',
+                'email_driver' => ['required', 'email:rfc,dns', Rule::unique('drivers')->ignore($driver)],
+                'status_ketersediaan_driver' => 'required|regex:/^[\pL\s\-]+$/u',
+                // 'status_berkas' => 'required|regex:/^[\pL\s\-]+$/u',
+                'isEnglish' => 'required',
+                'tanggal_lahir_driver' => 'required',
+                'jenis_kelamin' => 'required|regex:/^[\pL\s\-]+$/u',
+                'no_telp_driver' => 'required|numeric|starts_with:08',
+                'url_foto_driver' => 'max:1024|mimes:jpg,png,jpeg|image',
+                'password',
+                'tarif_sewa_driver' => 'required|numeric',
+                'berkas_bebas_napza' => 'max:1024|mimes:jpg,png,jpeg|image',
+                'berkas_sim' => 'max:1024|mimes:jpg,png,jpeg|image',
+                'berkas_sehat_jiwa' => 'max:1024|mimes:jpg,png,jpeg|image',
+                'berkas_sehat_jasmani' => 'max:1024|mimes:jpg,png,jpeg|image',
+                'berkas_skck' => 'max:1024|mimes:jpg,png,jpeg|image',
+                // 'rerata_rating_driver' => 'required|numeric',
+                'isAktif' => 'required',
+            ],
+            [],
+            [
+                'nama_driver' => 'Nama Driver',
+                'alamat_driver' => 'Alamat Driver',
+                'email_driver' => 'Email Driver',
+                'status_ketersediaan_driver' => 'Status Ketersediaan Driver',
+                'isEnglish' => 'Bahasa Inggris Driver',
+                'tanggal_lahir_driver' => 'Tanggal Lahir Driver',
+                'jenis_kelamin' => 'Jenis Kelamin',
+                'no_telp_driver' => 'Nomor Telepon',
+                'url_foto_driver' => 'Foto Driver',
+                'tarif_sewa_driver' => 'Tarif Sewa Driver',
+                'berkas_bebas_napza' => 'Berkas Bebas Napza',
+                'berkas_sim' => 'Berkas Sim',
+                'berkas_sehat_jiwa' => 'Berkas Sehat Jiwa',
+                'berkas_sehat_jasmani' => 'Berkas Sehat Jasmani',
+                'berkas_skck' => 'Berkas SKCK',
+                'isAktif' => 'Status Aktif',
+            ]
+        );
+
+        $err_message = array(array('Pastikan Field Terisi Semuanya'));
+
+        if (
+            $request->nama_driver === 'null' || $request->alamat_driver === 'null' || $request->email_driver === 'null' || $request->status_ketersediaan_driver === 'null' ||
+            $request->isEnglish === 'null' || $request->tanggal_lahir_driver === 'null' || $request->jenis_kelamin === 'null' ||
+            $request->no_telp_driver === 'null' || $request->tarif_sewa_driver === 'null' || $request->isAktif === 'null'
+        ) {
+            return response(['message' => $err_message], 400);
+        }
 
         if ($validate->fails())
             return response(['message' => $validate->errors()], 400);

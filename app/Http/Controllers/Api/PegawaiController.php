@@ -68,16 +68,39 @@ class PegawaiController extends Controller
     public function store(Request $request)
     {
         $storeData = $request->all();
-        $validate = Validator::make($storeData, [
-            'nama_pegawai' => 'required|regex:/^[\pL\s\-]+$/u',
-            'alamat_pegawai' => 'required',
-            'email_pegawai' => 'required|email:rfc,dns|unique:Pegawais',
-            'tanggal_lahir_pegawai' => 'required',
-            'jenis_kelamin_pegawai' => 'required',
-            'no_telp_pegawai' => 'required|numeric|starts_with:08',
-            'url_foto_pegawai' => 'required|max:1024|mimes:jpg,png,jpeg|image',
-            'isAktif' => 'required',
-        ]); // membuat rule validasi input
+        $validate = Validator::make(
+            $storeData,
+            [
+                'nama_pegawai' => 'required|regex:/^[\pL\s\-]+$/u',
+                'alamat_pegawai' => 'required',
+                'email_pegawai' => 'required|email:rfc,dns|unique:Pegawais',
+                'tanggal_lahir_pegawai' => 'required',
+                'jenis_kelamin_pegawai' => 'required',
+                'no_telp_pegawai' => 'required|numeric|starts_with:08',
+                'url_foto_pegawai' => 'required|max:1024|mimes:jpg,png,jpeg|image',
+                'isAktif' => 'required',
+            ],
+            [],
+            [
+                'nama_pegawai' => 'Nama Pegawai',
+                'alamat_pegawai' => 'Alamat Pegawai',
+                'email_pegawai' => 'Email Pegawai',
+                'tanggal_lahir_pegawai' => 'Tanggal Lahir',
+                'jenis_kelamin_pegawai' => 'Jenis Kelamin',
+                'no_telp_pegawai' => 'Nomor Telepon',
+                'url_foto_pegawai' => 'Foto Profil',
+            ]
+        ); // membuat rule validasi input
+
+        $err_message = array(array('Pastikan Field Terisi Semuanya'));
+
+        if (
+            $request->id_role === 'null' || $request->nama_pegawai === 'null' || $request->alamat_pegawai === 'null' || $request->email_pegawai === 'null' ||
+            $request->tanggal_lahir_pegawai === 'null' || $request->jenis_kelamin_pegawai === 'null' ||
+            $request->no_telp_pegawai === 'null' || $request->url_foto_pegawai === 'null' || $request->isAktif === 'null'
+        ) {
+            return response(['message' => $err_message], 400);
+        }
 
         if ($validate->fails())
             return response(['message' => $validate->errors()], 400);
@@ -138,17 +161,40 @@ class PegawaiController extends Controller
         }
 
         $updateData = $request->all();
-        $validate = Validator::make($updateData, [
-            'nama_pegawai' => 'required|regex:/^[\pL\s\-]+$/u',
-            'alamat_pegawai' => 'required',
-            'email_pegawai' => ['max:60', 'required', 'email:rfc,dns', Rule::unique('pegawais')->ignore($pegawai)],
-            'tanggal_lahir_pegawai' => 'required',
-            'jenis_kelamin_pegawai' => 'required',
-            'no_telp_pegawai' => 'required|numeric',
-            // 'password_pegawai',
-            'url_foto_pegawai' => 'max:1024|mimes:jpg,png,jpeg|image',
-            'isAktif' => 'required',
-        ]);
+        $validate = Validator::make(
+            $updateData,
+            [
+                'nama_pegawai' => 'required|regex:/^[\pL\s\-]+$/u',
+                'alamat_pegawai' => 'required',
+                'email_pegawai' => ['max:60', 'required', 'email:rfc,dns', Rule::unique('pegawais')->ignore($pegawai)],
+                'tanggal_lahir_pegawai' => 'required',
+                'jenis_kelamin_pegawai' => 'required',
+                'no_telp_pegawai' => 'required|numeric',
+                // 'password_pegawai',
+                'url_foto_pegawai' => 'max:1024|mimes:jpg,png,jpeg|image',
+                'isAktif' => 'required',
+            ],
+            [],
+            [
+                'nama_pegawai' => 'Nama Pegawai',
+                'alamat_pegawai' => 'Alamat Pegawai',
+                'email_pegawai' => 'Email Pegawai',
+                'tanggal_lahir_pegawai' => 'Tanggal Lahir',
+                'jenis_kelamin_pegawai' => 'Jenis Kelamin',
+                'no_telp_pegawai' => 'Nomor Telepon',
+                'url_foto_pegawai' => 'Foto Profil',
+            ]
+        );
+
+        $err_message = array(array('Pastikan Field Terisi Semuanya'));
+
+        if (
+            $request->id_role === 'null' || $request->nama_pegawai === 'null' || $request->alamat_pegawai === 'null' || $request->email_pegawai === 'null' ||
+            $request->tanggal_lahir_pegawai === 'null' || $request->jenis_kelamin_pegawai === 'null' ||
+            $request->no_telp_pegawai === 'null' || $request->isAktif === 'null'
+        ) {
+            return response(['message' => $err_message], 400);
+        }
 
         if ($validate->fails())
             return response(['message' => $validate->errors()], 400);

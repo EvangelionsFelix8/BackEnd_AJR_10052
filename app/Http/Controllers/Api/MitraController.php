@@ -65,13 +65,33 @@ class MitraController extends Controller
     public function store(Request $request)
     {
         $storeData = $request->all();
-        $validate = Validator::make($storeData, [
-            'nama_mitra' => 'required|regex:/^[\pL\s\-]+$/u',
-            'no_ktp_mitra' => 'required|numeric',
-            'alamat_mitra' => 'required',
-            'no_telp_mitra' => 'required|numeric|starts_with:08',
-            'isAktif' => 'required',
-        ]); // membuat rule validasi input
+        $validate = Validator::make(
+            $storeData,
+            [
+                'nama_mitra' => 'required|regex:/^[\pL\s\-]+$/u',
+                'no_ktp_mitra' => 'required|numeric',
+                'alamat_mitra' => 'required',
+                'no_telp_mitra' => 'required|numeric|starts_with:08',
+                'isAktif' => 'required',
+            ],
+            [],
+            [
+                'nama_mitra' => 'Nama Mitra',
+                'no_ktp_mitra' => 'Nomor KTP Mitra',
+                'alamat_mitra' => 'Alamat Mitra',
+                'no_telp_mitra' => 'Nomor Telepon Mitra',
+                'isAktif' => 'Status Mitra',
+            ]
+        ); // membuat rule validasi input
+
+        $err_message = array(array('Pastikan Field Terisi Semuanya'));
+
+        if (
+            $request->nama_mitra === 'null' || $request->no_ktp_mitra === 'null' || $request->alamat_mitra === 'null' ||
+            $request->no_telp_mitra === 'null' || $request->isAktif === 'null'
+        ) {
+            return response(['message' => $err_message], 400);
+        }
 
         if ($validate->fails())
             return response(['message' => $validate->errors()], 400);
@@ -120,13 +140,33 @@ class MitraController extends Controller
         }
 
         $updateData = $request->all();
-        $validate = Validator::make($updateData, [
-            'nama_mitra' => 'required|regex:/^[\pL\s\-]+$/u',
-            'no_ktp_mitra' => 'required|numeric',
-            'alamat_mitra' => 'required',
-            'no_telp_mitra' => 'required|numeric|starts_with:08',
-            'isAktif' => 'required',
-        ]);
+        $validate = Validator::make(
+            $updateData,
+            [
+                'nama_mitra' => 'required|regex:/^[\pL\s\-]+$/u',
+                'no_ktp_mitra' => 'required|numeric',
+                'alamat_mitra' => 'required',
+                'no_telp_mitra' => 'required|numeric|starts_with:08',
+                'isAktif' => 'required',
+            ],
+            [],
+            [
+                'nama_mitra' => 'Nama Mitra',
+                'no_ktp_mitra' => 'Nomor KTP Mitra',
+                'alamat_mitra' => 'Alamat Mitra',
+                'no_telp_mitra' => 'Nomor Telepon Mitra',
+                'isAktif' => 'Status Mitra',
+            ]
+        );
+
+        $err_message = array(array('Pastikan Field Terisi Semuanya'));
+
+        if (
+            $request->nama_mitra === 'null' || $request->no_ktp_mitra === 'null' || $request->alamat_mitra === 'null' ||
+            $request->no_telp_mitra === 'null' || $request->isAktif === 'null'
+        ) {
+            return response(['message' => $err_message], 400);
+        }
 
         if ($validate->fails())
             return response(['message' => $validate->errors()], 400);

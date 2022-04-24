@@ -67,16 +67,30 @@ class PromoController extends Controller
     {
         $storeData = $request->all();
         $validate = Validator::make($storeData, [
-            'kode_promo' => 'required|unique:promos',
+            'kode_promo' => 'unique:promos',
             'jenis_promo' => 'required',
-            'besar_diskon_promo' => 'required',
+            'besar_diskon_promo' => 'required|numeric',
             'status_promo' => 'required',
             'keterangan' => 'required'
+        ], [], [
+            'kode_promo' => 'Kode Promo',
+            'jenis_promo' => 'Alamat Pegawai',
+            'besar_diskon_promo' => 'Besar Diskon',
+            'status_promo' => 'Status Promo',
+            'keterangan' => 'Keterangan'
         ]); // membuat rule validasi input
+
+        $err_message = array(array('Pastikan Field Terisi Semuanya'));
+
+        if (
+            $request->keterangan === 'null' || $request->kode_promo === 'null' || $request->jenis_promo === 'null' ||
+            $request->besar_diskon_promo === 'null' || $request->status_promo === 'null'
+        ) {
+            return response(['message' => $err_message], 400);
+        }
 
         if ($validate->fails())
             return response(['message' => $validate->errors()], 400);
-
 
         $promo = Promo::create($storeData);
         return response([
@@ -124,10 +138,25 @@ class PromoController extends Controller
         $validate = Validator::make($updateData, [
             'kode_promo' => ['max:60', 'required', Rule::unique('promos')->ignore($promo)],
             'jenis_promo' => 'required',
-            'besar_diskon_promo' => 'required',
+            'besar_diskon_promo' => 'required|numeric',
             'status_promo' => 'required',
             'keterangan' => 'required'
+        ], [], [
+            'kode_promo' => 'Kode Promo',
+            'jenis_promo' => 'Alamat Pegawai',
+            'besar_diskon_promo' => 'Besar Diskon',
+            'status_promo' => 'Status Promo',
+            'keterangan' => 'Keterangan'
         ]);
+
+        $err_message = array(array('Pastikan Field Terisi Semuanya'));
+
+        if (
+            $updateData['kode_promo'] === 'null' || $updateData['jenis_promo'] === 'null' || $updateData['besar_diskon_promo'] === null ||
+            $updateData['kode_promo'] === 'null' || $updateData['keterangan'] === 'null'
+        ) {
+            return response(['message' => $err_message], 400);
+        }
 
         if ($validate->fails())
             return response(['message' => $validate->errors()], 400);

@@ -9,8 +9,6 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\Mobil;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
-use App\Http\Controllers\Api\SYSDATETIME;
-use COM;
 
 class MobilController extends Controller
 {
@@ -117,34 +115,65 @@ class MobilController extends Controller
     public function store(Request $request)
     {
         $storeData = $request->all();
-        $validate = Validator::make($storeData, [
-            'id_mitra',
-            'nama_mobil' => 'required',
-            'tipe_mobil' => 'required',
-            'jenis_transmisi' => 'required',
-            'jenis_bahan_bakar' => 'required',
-            'warna_mobil' => 'required',
-            'volume_bahan_bakar' => 'required|numeric',
-            'kapasitas_penumpang' => 'required|numeric',
-            'harga_sewa_mobil' => 'required|numeric',
-            'plat_nomor' => 'required',
-            'nomor_stnk' => 'required',
-            'status_ketersediaan',
-            'url_foto_mobil' => 'required|max:1024|mimes:jpg,png,jpeg|image',
-            'fasilitas' => 'required',
-            // 'mulai_kontrak' => 'required',
-            // 'selesai_kontrak' => 'required',
-            'tanggal_servis_terakhir' => 'required',
-        ]); // membuat rule validasi input
+        $validate = Validator::make(
+            $storeData,
+            [
+                'id_mitra',
+                'nama_mobil' => 'required',
+                'tipe_mobil' => 'required',
+                'jenis_transmisi' => 'required',
+                'jenis_bahan_bakar' => 'required',
+                'warna_mobil' => 'required',
+                'volume_bahan_bakar' => 'required|numeric',
+                'kapasitas_penumpang' => 'required|numeric',
+                'harga_sewa_mobil' => 'required|numeric',
+                'plat_nomor' => 'required',
+                'nomor_stnk' => 'required',
+                'status_ketersediaan' => 'required',
+                'url_foto_mobil' => 'required|max:1024|mimes:jpg,png,jpeg|image',
+                'fasilitas' => 'required',
+                // 'mulai_kontrak' => 'required',
+                // 'selesai_kontrak' => 'required',
+                'tanggal_servis_terakhir' => 'required',
+            ],
+            [],
+            [
+                'nama_mobil' => 'Nama Mobil',
+                'tipe_mobil' => 'Tipe Mobil',
+                'jenis_transmisi' => 'Jenis Transmisi',
+                'jenis_bahan_bakar' => 'Jenis Bahan Bakar',
+                'warna_mobil' => 'Warna Mobil',
+                'volume_bahan_bakar' => 'Volume Bahan Bakar',
+                'kapasitas_penumpang' => 'Kapasitas Penumpang',
+                'harga_sewa_mobil' => 'Harga Sewa Mobil',
+                // 'plat_nomor' => '',
+                // 'nomor_stnk' => 'required',
+                // 'status_ketersediaan' => 'required',
+                'url_foto_mobil' => 'Foto Mobil',
+                'fasilitas' => 'Fasilitas Mobil',
+                // 'tanggal_servis_terakhir' => 'required',
+            ],
+        ); // membuat rule validasi input
+
+        $err_message = array(array('Pastikan Field Terisi Semuanya'));
+
+        if (
+            $request->nama_mobil === 'null' || $request->tipe_mobil === 'null' || $request->jenis_transmisi === 'null' || $request->jenis_bahan_bakar === 'null' ||
+            $request->warna_mobil === 'null' || $request->volume_bahan_bakar === 'null' ||
+            $request->kapasitas_penumpang === 'null' || $request->harga_sewa_mobil === 'null' || $request->url_foto_mobil === 'null' ||
+            $request->fasilitas === 'null'
+        ) {
+            return response(['message' => $err_message], 400);
+        }
 
         if ($validate->fails())
             return response(['message' => $validate->errors()], 400);
 
-        if (($request->id_mitra) === NULL) {
-            $jenis_aset = sprintf("0");
-        } else {
-            $jenis_aset = sprintf("1");
-        }
+        // if (($request->id_mitra) === NULL) {
+        //     $jenis_aset = sprintf("0");
+        // } else {
+        //     $jenis_aset = sprintf("1");
+        // }
         $fotoMobil = $request->url_foto_mobil->store('foto_mobil', ['disk' => 'public']);
         $mobil = Mobil::create([
             'id_mitra' => $request->id_mitra,
@@ -154,7 +183,7 @@ class MobilController extends Controller
             'jenis_bahan_bakar' => $request->jenis_bahan_bakar,
             'warna_mobil' => $request->warna_mobil,
             'volume_bahan_bakar' => $request->volume_bahan_bakar,
-            'kategori_aset' => $jenis_aset,
+            'kategori_aset' => $request->kategori_aset,
             'kapasitas_penumpang' => $request->kapasitas_penumpang,
             'harga_sewa_mobil' => $request->harga_sewa_mobil,
             'plat_nomor' => $request->plat_nomor,
@@ -208,28 +237,60 @@ class MobilController extends Controller
         }
 
         $updateData = $request->all();
-        $validate = Validator::make($updateData, [
-            'nama_mobil' => 'required',
-            'tipe_mobil' => 'required',
-            'jenis_transmisi' => 'required',
-            'jenis_bahan_bakar' => 'required',
-            'warna_mobil' => 'required',
-            'volume_bahan_bakar' => 'required|numeric',
-            'kategori_aset' => 'required',
-            'kapasitas_penumpang' => 'required|numeric',
-            'harga_sewa_mobil' => 'required|numeric',
-            'plat_nomor' => 'required',
-            'nomor_stnk' => 'required',
-            'status_ketersediaan' => 'required',
-            // 'url_foto_mobil' => 'required',
-            'fasilitas' => 'required',
-            // 'mulai_kontrak' => 'required',
-            // 'selesai_kontrak' => 'required',
-            'tanggal_servis_terakhir' => 'required'
-        ]);
+        $validate = Validator::make(
+            $updateData,
+            [
+                'nama_mobil' => 'required',
+                'tipe_mobil' => 'required',
+                'jenis_transmisi' => 'required',
+                'jenis_bahan_bakar' => 'required',
+                'warna_mobil' => 'required',
+                'volume_bahan_bakar' => 'required|numeric',
+                'kategori_aset' => 'required',
+                'kapasitas_penumpang' => 'required|numeric',
+                'harga_sewa_mobil' => 'required|numeric',
+                'plat_nomor' => 'required',
+                'nomor_stnk' => 'required',
+                'status_ketersediaan' => 'required',
+                // 'url_foto_mobil' => 'required',
+                'fasilitas' => 'required',
+                // 'mulai_kontrak' => 'required',
+                // 'selesai_kontrak' => 'required',
+                'tanggal_servis_terakhir' => 'required'
+            ],
+            [],
+            [
+                'nama_mobil' => 'Nama Mobil',
+                'tipe_mobil' => 'Tipe Mobil',
+                'jenis_transmisi' => 'Jenis Transmisi',
+                'jenis_bahan_bakar' => 'Jenis Bahan Bakar',
+                'warna_mobil' => 'Warna Mobil',
+                'volume_bahan_bakar' => 'Volume Bahan Bakar',
+                'kapasitas_penumpang' => 'Kapasitas Penumpang',
+                'harga_sewa_mobil' => 'Harga Sewa Mobil',
+                // 'plat_nomor' => '',
+                // 'nomor_stnk' => 'required',
+                // 'status_ketersediaan' => 'required',
+                'url_foto_mobil' => 'Foto Mobil',
+                'fasilitas' => 'Fasilitas Mobil',
+                // 'tanggal_servis_terakhir' => 'required',
+            ],
+        );
+
+        $err_message = array(array('Pastikan Field Terisi Semuanya'));
+
+        if (
+            $request->nama_mobil === 'null' || $request->tipe_mobil === 'null' || $request->jenis_transmisi === 'null' || $request->jenis_bahan_bakar === 'null' ||
+            $request->warna_mobil === 'null' || $request->volume_bahan_bakar === 'null' ||
+            $request->kapasitas_penumpang === 'null' || $request->harga_sewa_mobil === 'null' || $request->url_foto_mobil === 'null' ||
+            $request->fasilitas === 'null'
+        ) {
+            return response(['message' => $err_message], 400);
+        }
 
         if ($validate->fails())
             return response(['message' => $validate->errors()], 400);
+
         $mobil->id_mitra = $updateData['id_mitra'];
         $mobil->nama_mobil = $updateData['nama_mobil'];
         $mobil->tipe_mobil = $updateData['tipe_mobil'];

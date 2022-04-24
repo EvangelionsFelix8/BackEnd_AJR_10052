@@ -78,14 +78,48 @@ class DetailJadwalController extends Controller
     public function store(Request $request)
     {
         $storeData = $request->all(); //Mengambil semua input dari API Client
+
+        $checkUnique = DB::table('detail_jadwals')
+            ->select('id_jadwal', 'id_pegawai')
+            ->whereRaw("id_jadwal = $request->id_jadwal && id_pegawai= $request->id_pegawai")
+            ->get()
+            ->first();
+
+        $temp_error = 'Pegawai Sudah Terjadwal pada jadwal ini';
+        if ($checkUnique != null) {
+            return response(['message' => $temp_error], 400);
+        }
+
+        $countShift = DB::table('detail_jadwals')
+            ->selectRaw('COUNT(id_pegawai) AS jumlah_shift')
+            ->whereRaw("id_pegawai = $request->id_pegawai")
+            ->get()
+            ->first()
+            ->jumlah_shift;
+
+        $temp_count = 'Pegawai Sudah Mencapai Batas Maksimal Shift';
+        if ($countShift > 5) {
+            return response(['message' => $temp_count], 400);
+        }
+
         $validate = Validator::make($storeData, [
             'id_jadwal' => 'required',
             'id_pegawai' => 'required',
+        ], [], [
+            'id_jadwal' => 'Hari Kerja dan Shift',
+            'id_pegawai' => 'Pegawai dan Jabatan',
         ]); //Membuat rule validasi input
+
+        $err_message = array(array('Pastikan Field Terisi Semuanya'));
+
+        if ($request->id_jadwal === 'null' || $request->id_pegawai === 'null') {
+            return response(['message' => $err_message], 400);
+        }
 
         if ($validate->fails()) {
             return response(['message' => $validate->errors()], 400); //Return error invalid input
         }
+
         $DetailJadwal = DetailJadwal::create($storeData);
         return response([
             'message' => 'Add detailjadwal Success',
@@ -121,6 +155,17 @@ class DetailJadwalController extends Controller
     {
         $detailjadwal = DetailJadwal::find($id);
 
+        $checkUnique = DB::table('detail_jadwals')
+            ->select('id_jadwal', 'id_pegawai')
+            ->whereRaw("id_jadwal = $request->id_jadwal && id_pegawai= $request->id_pegawai")
+            ->get()
+            ->first();
+
+        $temp_error = 'Pegawai Sudah Terjadwal pada jadwal ini';
+        if ($checkUnique != null) {
+            return response(['message' => $temp_error], 400);
+        }
+
         if (is_null($detailjadwal)) {
             return response([
                 'message' => 'DetailJadwal Not Found',
@@ -132,7 +177,16 @@ class DetailJadwalController extends Controller
         $validate = Validator::make($updateData, [
             'id_jadwal' => 'required',
             'id_pegawai' => 'required',
+        ], [], [
+            'id_jadwal' => 'Hari Kerja dan Shift',
+            'id_pegawai' => 'Pegawai dan Jabatan',
         ]);
+
+        $err_message = array(array('Pastikan Field Terisi Semuanya'));
+
+        if ($updateData['id_jadwal'] === 'null' || $updateData['id_pegawai'] === 'null') {
+            return response(['message' => $err_message], 400);
+        }
 
         if ($validate->fails())
             return response(['message' => $validate->errors()], 400);
