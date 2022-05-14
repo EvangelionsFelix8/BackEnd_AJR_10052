@@ -16,6 +16,56 @@ class DriverController extends Controller
     public function index()
     {
         $drivers = Driver::all();
+        // $drivers = Driver::all()->selectRaw("ROUND(AVG(transaksis.rating_driver), 2) as rata_rating")
+        //     ->leftJoin('transaksis', 'transaksis.id_driver', '=', 'drivers.id_driver')
+        //     ->get();
+
+        if (count($drivers) > 0) {
+            return response([
+                'message' => 'Retrieve All Success',
+                'data' => $drivers
+            ], 200); // return data semua promo dalam bentuk json
+        }
+
+        return response([
+            'message' => 'Empty',
+            'data' => null
+        ], 400); // return message data promo kosong
+    }
+
+    public function getreratadriverfortable()
+    {
+        $drivers = Driver::selectRaw("drivers.id_driver, ROUND(AVG(transaksis.rating_driver), 2) as rata_rating")
+            ->leftJoin('transaksis', 'transaksis.id_driver', '=', 'drivers.id_driver')
+            ->groupBy('drivers.id_driver')
+            ->get();
+
+        if (count($drivers) > 0) {
+            return response([
+                'message' => 'Retrieve All Success',
+                'data' => $drivers
+            ], 200); // return data semua promo dalam bentuk json
+        }
+
+        return response([
+            'message' => 'Empty',
+            'data' => null
+        ], 400); // return message data promo kosong
+    }
+
+    public function getreratadriver()
+    {
+        $drivers = DB::table('drivers')
+            ->leftJoin('transaksis', 'transaksis.id_driver', '=', 'drivers.id_driver')
+            ->selectRaw("ROUND(AVG(transaksis.rating_driver), 2) as rata_rating")
+            ->groupBy('transaksis.id_driver')
+            ->where('status_ketersediaan_driver', 'Tersedia')
+            ->get();
+
+        // $drivers = DB::table('drivers')->select("AVG(transaksis.rating_driver) as rata_rating")
+        //     ->join('transaksis', 'transaksis.id_driver', '=', 'drivers.id_driver')
+        //     // ->groupBy('transaksis.id_driver')
+        //     ->get();
 
         if (count($drivers) > 0) {
             return response([
@@ -32,7 +82,7 @@ class DriverController extends Controller
 
     public function showByStatusKeter()
     {
-        $drivers = Driver::where('status_ketersediaan', 'tersedia')->get();
+        $drivers = Driver::where('status_ketersediaan_driver', 'Tersedia')->get();
 
         if (count($drivers) > 0) {
             return response([

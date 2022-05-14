@@ -58,6 +58,174 @@ class DetailJadwalController extends Controller
         ], 400); // return message data detailjadwal kosong
     }
 
+    public function index_selasa()
+    {
+        $detailjadwals = DB::table('detail_jadwals')
+
+            ->join('jadwals', 'jadwals.id_jadwal', '=', 'detail_jadwals.id_jadwal')
+            ->join('pegawais', 'pegawais.id_pegawai', '=', 'detail_jadwals.id_pegawai')
+            ->join('roles', 'roles.id_role', '=', 'pegawais.id_role')
+            // ->selectRaw('count(id_pegawai) as count_pegawai')
+            ->select('id_detail_jadwal', 'pegawais.id_pegawai', 'jadwals.id_jadwal', 'hari_kerja', 'shift', 'nama_pegawai', 'nama_role')
+            // ->groupBy('id_pegawai')
+            ->orderBy('hari_kerja', 'desc')->orderBy('shift', 'asc')
+            ->where('hari_kerja', '=', 'Selasa')
+            ->get();
+        // $detailjadwals = DetailJadwal::all();
+
+        if (count($detailjadwals) > 0) {
+            return response([
+                'message' => 'Retrieve All Success',
+                'data' => $detailjadwals
+            ], 200); // return data semua detailjadwal dalam bentuk json
+        }
+
+        return response([
+            'message' => 'Empty',
+            'data' => null
+        ], 400); // return message data detailjadwal kosong
+    }
+
+    public function index_rabu()
+    {
+        $detailjadwals = DB::table('detail_jadwals')
+
+            ->join('jadwals', 'jadwals.id_jadwal', '=', 'detail_jadwals.id_jadwal')
+            ->join('pegawais', 'pegawais.id_pegawai', '=', 'detail_jadwals.id_pegawai')
+            ->join('roles', 'roles.id_role', '=', 'pegawais.id_role')
+            // ->selectRaw('count(id_pegawai) as count_pegawai')
+            ->select('id_detail_jadwal', 'pegawais.id_pegawai', 'jadwals.id_jadwal', 'hari_kerja', 'shift', 'nama_pegawai', 'nama_role')
+            // ->groupBy('id_pegawai')
+            ->orderBy('hari_kerja', 'desc')->orderBy('shift', 'asc')
+            ->where('hari_kerja', '=', 'Rabu')
+            ->get();
+        // $detailjadwals = DetailJadwal::all();
+
+        if (count($detailjadwals) > 0) {
+            return response([
+                'message' => 'Retrieve All Success',
+                'data' => $detailjadwals
+            ], 200); // return data semua detailjadwal dalam bentuk json
+        }
+
+        return response([
+            'message' => 'Empty',
+            'data' => null
+        ], 400); // return message data detailjadwal kosong
+    }
+
+    public function index_Kamis()
+    {
+        $detailjadwals = DB::table('detail_jadwals')
+
+            ->join('jadwals', 'jadwals.id_jadwal', '=', 'detail_jadwals.id_jadwal')
+            ->join('pegawais', 'pegawais.id_pegawai', '=', 'detail_jadwals.id_pegawai')
+            ->join('roles', 'roles.id_role', '=', 'pegawais.id_role')
+            // ->selectRaw('count(id_pegawai) as count_pegawai')
+            ->select('id_detail_jadwal', 'pegawais.id_pegawai', 'jadwals.id_jadwal', 'hari_kerja', 'shift', 'nama_pegawai', 'nama_role')
+            // ->groupBy('id_pegawai')
+            ->orderBy('hari_kerja', 'desc')->orderBy('shift', 'asc')
+            ->where('hari_kerja', '=', 'Kamis')
+            ->get();
+        // $detailjadwals = DetailJadwal::all();
+
+        if (count($detailjadwals) > 0) {
+            return response([
+                'message' => 'Retrieve All Success',
+                'data' => $detailjadwals
+            ], 200); // return data semua detailjadwal dalam bentuk json
+        }
+
+        return response([
+            'message' => 'Empty',
+            'data' => null
+        ], 400); // return message data detailjadwal kosong
+    }
+
+    public function index_Jumat()
+    {
+        $detailjadwals = DB::table('detail_jadwals')
+
+            ->join('jadwals', 'jadwals.id_jadwal', '=', 'detail_jadwals.id_jadwal')
+            ->join('pegawais', 'pegawais.id_pegawai', '=', 'detail_jadwals.id_pegawai')
+            ->join('roles', 'roles.id_role', '=', 'pegawais.id_role')
+            // ->selectRaw('count(id_pegawai) as count_pegawai')
+            ->select('id_detail_jadwal', 'pegawais.id_pegawai', 'jadwals.id_jadwal', 'hari_kerja', 'shift', 'nama_pegawai', 'nama_role')
+            // ->groupBy('id_pegawai')
+            ->orderBy('hari_kerja', 'desc')->orderBy('shift', 'asc')
+            ->where('hari_kerja', '=', 'Jumat')
+            ->get();
+        // $detailjadwals = DetailJadwal::all();
+
+        if (count($detailjadwals) > 0) {
+            return response([
+                'message' => 'Retrieve All Success',
+                'data' => $detailjadwals
+            ], 200); // return data semua detailjadwal dalam bentuk json
+        }
+
+        return response([
+            'message' => 'Empty',
+            'data' => null
+        ], 400); // return message data detailjadwal kosong
+    }
+
+    public function index_sabtu()
+    {
+        $detailjadwals = DB::table('detail_jadwals')
+
+            ->join('jadwals', 'jadwals.id_jadwal', '=', 'detail_jadwals.id_jadwal')
+            ->join('pegawais', 'pegawais.id_pegawai', '=', 'detail_jadwals.id_pegawai')
+            ->join('roles', 'roles.id_role', '=', 'pegawais.id_role')
+            // ->selectRaw('count(id_pegawai) as count_pegawai')
+            ->select('id_detail_jadwal', 'pegawais.id_pegawai', 'jadwals.id_jadwal', 'hari_kerja', 'shift', 'nama_pegawai', 'nama_role')
+            // ->groupBy('id_pegawai')
+            ->orderBy('hari_kerja', 'desc')->orderBy('shift', 'asc')
+            ->where('hari_kerja', '=', 'Sabtu')
+            ->get();
+        // $detailjadwals = DetailJadwal::all();
+
+        if (count($detailjadwals) > 0) {
+            return response([
+                'message' => 'Retrieve All Success',
+                'data' => $detailjadwals
+            ], 200); // return data semua detailjadwal dalam bentuk json
+        }
+
+        return response([
+            'message' => 'Empty',
+            'data' => null
+        ], 400); // return message data detailjadwal kosong
+    }
+
+    public function index_minggu()
+    {
+        $detailjadwals = DB::table('detail_jadwals')
+
+            ->join('jadwals', 'jadwals.id_jadwal', '=', 'detail_jadwals.id_jadwal')
+            ->join('pegawais', 'pegawais.id_pegawai', '=', 'detail_jadwals.id_pegawai')
+            ->join('roles', 'roles.id_role', '=', 'pegawais.id_role')
+            // ->selectRaw('count(id_pegawai) as count_pegawai')
+            ->select('id_detail_jadwal', 'pegawais.id_pegawai', 'jadwals.id_jadwal', 'hari_kerja', 'shift', 'nama_pegawai', 'nama_role')
+            // ->groupBy('id_pegawai')
+            ->orderBy('hari_kerja', 'desc')->orderBy('shift', 'asc')
+            ->where('hari_kerja', '=', 'Minggu')
+            ->get();
+        // $detailjadwals = DetailJadwal::all();
+
+        if (count($detailjadwals) > 0) {
+            return response([
+                'message' => 'Retrieve All Success',
+                'data' => $detailjadwals
+            ], 200); // return data semua detailjadwal dalam bentuk json
+        }
+
+        return response([
+            'message' => 'Empty',
+            'data' => null
+        ], 400); // return message data detailjadwal kosong
+    }
+
     public function show($id_role)
     {
         $detailjadwal = DetailJadwal::find($id_role);

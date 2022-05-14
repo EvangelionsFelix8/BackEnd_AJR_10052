@@ -47,6 +47,52 @@ class CustomerController extends Controller
         ], 404); // return message saat data detailjadwal tidka ditemukan
     }
 
+    public function countTransaction($id)
+    {
+        $from = Carbon::now()->format('ymd');
+        $customer = DB::table('customers')
+            ->join('transaksis', 'transaksis.id_customer', '=', 'customers.id_customer')
+            ->selectRaw("COUNT(transaksis.id_customer) as jumlah")
+            ->groupBy('customers.id_customer')
+            ->where('transaksis.id_customer', '=', $id)
+            ->count();
+
+        if (!is_null($customer)) {
+            return response([
+                'message' => 'Retrieve Transaksi Success',
+                'data' => $customer
+            ], 200);
+        } // return data detailjadwal yang ditemukan dalam bentuk json
+
+        return response([
+            'message' => 'Customer Not Found',
+            'data' => null
+        ], 404); // return message saat data detailjadwal tidka ditemukan
+    }
+
+    public function countTransactionDone($id)
+    {
+        $customer = DB::table('customers')
+            ->join('transaksis', 'transaksis.id_customer', '=', 'customers.id_customer')
+            ->selectRaw("COUNT(transaksis.id_customer) as jumlah")
+            ->groupBy('customers.id_customer')
+            ->where('transaksis.id_customer', '=', $id)
+            ->where('status_transaksi', '=', 'Sudah Lunas (Selesai)')
+            ->count();
+
+        if (!is_null($customer)) {
+            return response([
+                'message' => 'Retrieve Transaksi Success',
+                'data' => $customer
+            ], 200);
+        } // return data detailjadwal yang ditemukan dalam bentuk json
+
+        return response([
+            'message' => 'Customer Not Found',
+            'data' => null
+        ], 404); // return message saat data detailjadwal tidka ditemukan
+    }
+
     public function store(Request $request)
     {
         $storeData = $request->all(); //Mengambil semua input dari API Client
@@ -60,8 +106,27 @@ class CustomerController extends Controller
             'no_telp_customer' => 'required|numeric|starts_with:08',
             // 'status_berkas' => 'required',
             'no_tanda_pengenal' => 'required|max:1024|mimes:jpg,png,jpeg|image',
-            // 'no_sim' => 'max:1024|mimes:jpg,png,jpeg|image',
+            'no_sim' => 'max:1024|mimes:jpg,png,jpeg|image',
+        ], [], [
+            'nama_customer' => 'Nama Customer',
+            'alamat_customer' => 'Alamat Customer',
+            'tanggal_lahir_customer' => 'Tanggal Lahir Customer',
+            'jenis_kelamin' => 'Jenis Kelamin',
+            'email_customer' => 'Email Customer',
+            'no_telp_customer' => 'Nomor Telepon',
+            'no_tanda_pengenal' => 'Foto Tanda Pengenal',
+            'no_sim' => 'Foto SIM',
         ]); //Membuat rule validasi input
+
+        $err_message = array(array('Pastikan Field Terisi Semuanya'));
+
+        if (
+            $request->nama_customer === 'null' || $request->alamat_customer === 'null' || $request->tanggal_lahir_customer === 'null' ||
+            $request->jenis_kelamin === 'null' || $request->email_customer === 'null' ||
+            $request->no_telp_customer === 'null' || $request->no_tanda_pengenal === 'null'
+        ) {
+            return response(['message' => $err_message], 400);
+        }
 
         if ($validate->fails()) {
             return response(['message' => $validate->errors()], 400); //Return error invalid input
@@ -117,11 +182,30 @@ class CustomerController extends Controller
             'tanggal_lahir_customer' => 'required',
             'jenis_kelamin' => 'required',
             'email_customer' => ['required', 'email:rfc,dns', Rule::unique('customers')->ignore($customer)],
-            'password' => 'required',
+            // 'password' => 'required',
             'no_telp_customer' => 'required|numeric|starts_with:08',
             'no_tanda_pengenal' => 'max:1024|mimes:jpg,png,jpeg|image',
             'no_sim' => 'max:1024|mimes:jpg,png,jpeg|image',
+        ], [], [
+            'nama_customer' => 'Nama Customer',
+            'alamat_customer' => 'Alamat Customer',
+            'tanggal_lahir_customer' => 'Tanggal Lahir Customer',
+            'jenis_kelamin' => 'Jenis Kelamin',
+            'email_customer' => 'Email Customer',
+            'no_telp_customer' => 'Nomor Telepon',
+            'no_tanda_pengenal' => 'Foto Tanda Pengenal',
+            'no_sim' => 'Foto SIM',
         ]);
+
+        $err_message = array(array('Pastikan Field Terisi Semuanya'));
+
+        if (
+            $request->nama_customer === 'null' || $request->alamat_customer === 'null' || $request->tanggal_lahir_customer === 'null' ||
+            $request->jenis_kelamin === 'null' || $request->email_customer === 'null' ||
+            $request->no_telp_customer === 'null' || $request->no_tanda_pengenal === 'null'
+        ) {
+            return response(['message' => $err_message], 400);
+        }
 
         if ($validate->fails())
             return response(['message' => $validate->errors()], 400);
@@ -131,9 +215,9 @@ class CustomerController extends Controller
         $customer->tanggal_lahir_customer = $updateData['tanggal_lahir_customer'];
         $customer->jenis_kelamin = $updateData['jenis_kelamin'];
         $customer->email_customer = $updateData['email_customer'];
-        $customer->password = $updateData['password'];
+        // $customer->password = $updateData['password'];
         $customer->no_telp_customer = $updateData['no_telp_customer'];
-        $customer->status_berkas = $updateData['status_berkas'];
+        // $customer->status_berkas = $updateData['status_berkas'];
 
         if (isset($request->no_tanda_pengenal)) {
             $fotoTandaPengenal = $request->no_tanda_pengenal->store('foto_tanda_pengenal', ['disk' => 'public']);
@@ -148,13 +232,13 @@ class CustomerController extends Controller
 
         if ($customer->save()) {
             return response([
-                'message' => 'Update Customer Success',
+                'message' => 'Update Profile Anda Success',
                 'data' => $customer
             ], 200);
         }
 
         return response([
-            'message' => 'Update Customer Failed',
+            'message' => 'Update Profile Anda Failed',
             'data' => null,
         ], 400); // return message saat detailjadwal gagal di edit
     }

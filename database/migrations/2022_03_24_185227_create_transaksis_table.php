@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use phpDocumentor\Reflection\Types\Nullable;
 
 return new class extends Migration
 {
@@ -25,7 +26,7 @@ return new class extends Migration
             $table->bigInteger('id_mobil')->unsigned();
             $table->foreign('id_mobil')->references('id_mobil')->on('mobils');
 
-            $table->bigInteger('id_pegawai')->unsigned();
+            $table->bigInteger('id_pegawai')->unsigned()->nullable();
             $table->foreign('id_pegawai')->references('id_pegawai')->on('pegawais');
 
             $table->bigInteger('id_promo')->unsigned()->nullable();
@@ -41,10 +42,10 @@ return new class extends Migration
             $table->double('total_harga', 15, 2);
             $table->double('total_sewa_mobil');
             $table->double('total_sewa_driver');
-            $table->double('total_denda');
-            $table->double('potongan_promo');
+            $table->double('total_denda')->nullable();
+            $table->double('potongan_promo')->nullable();
             $table->integer('rating_driver')->nullable();
-            $table->integer('rating_ajr');
+            $table->integer('rating_ajr')->nullable();
             $table->timestamps();
         });
     }

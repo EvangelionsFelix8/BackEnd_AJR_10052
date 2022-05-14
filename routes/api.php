@@ -29,6 +29,12 @@ Route::delete('promo/{id_promo}', 'Api\PromoController@destroy');
 
 Route::post('detailjadwal', 'Api\DetailJadwalController@store');
 Route::get('detailjadwal', 'Api\DetailJadwalController@index');
+Route::get('detailjadwal_selasa', 'Api\DetailJadwalController@index_selasa');
+Route::get('detailjadwal_rabu', 'Api\DetailJadwalController@index_rabu');
+Route::get('detailjadwal_kamis', 'Api\DetailJadwalController@index_kamis');
+Route::get('detailjadwal_jumat', 'Api\DetailJadwalController@index_jumat');
+Route::get('detailjadwal_sabtu', 'Api\DetailJadwalController@index_sabtu');
+Route::get('detailjadwal_minggu', 'Api\DetailJadwalController@index_minggu');
 // Route::get('detailjadwal', 'Api\DetailJadwalController@getJadwalWithPegawai');
 Route::get('detailjadwal/{id_detail_jadwal}', 'Api\DetailJadwalController@show');
 Route::put('detailjadwal/{id_detail_jadwal}', 'Api\DetailJadwalController@update');
@@ -49,6 +55,8 @@ Route::delete('pegawai/{id_pegawai}', 'Api\PegawaiController@destroy');
 
 Route::post('driver', 'Api\DriverController@store');
 Route::get('driver', 'Api\DriverController@index');
+Route::get('getreratadriver', 'Api\DriverController@getreratadriver');
+Route::get('getreratadriverfortable', 'Api\DriverController@getreratadriverfortable');
 Route::get('showbystatusketersediaan', 'Api\DriverController@showByStatusKeter');
 Route::get('showbyaktifdriver', 'Api\DriverController@showByAktif');
 Route::get('driver/{id_driver}', 'Api\DriverController@show');
@@ -75,14 +83,24 @@ Route::delete('mobil/{id_mobil}', 'Api\MobilController@destroy');
 Route::post('customer', 'Api\CustomerController@store');
 Route::get('customer', 'Api\CustomerController@index');
 Route::get('customer/{id_customer}', 'Api\CustomerController@show');
-Route::put('customer/{id_customer}', 'Api\CustomerController@update');
+Route::get('countTransaction/{id_customer}', 'Api\CustomerController@countTransaction');
+Route::get('countTransactionDone/{id_customer}', 'Api\CustomerController@countTransactionDone');
+Route::post('customer/{id_customer}', 'Api\CustomerController@update');
 Route::post('updateberkascustomer/{id_customer}', 'Api\CustomerController@updateBerkas');
 Route::delete('customer/{id_customer}', 'Api\CustomerController@destroy');
 
 Route::post('transaksi', 'Api\TransaksiController@store');
+Route::post('bayartransaksi/{id_transaksi}', 'Api\TransaksiController@pembayaran');
+Route::post('bataltransaksi/{id_transaksi}', 'Api\TransaksiController@batal');
+Route::post('ratingdriver/{id_transaksi}', 'Api\TransaksiController@addRatingDriver');
+Route::post('setStatus/{id_transaksi}', 'Api\TransaksiController@updateStatus');
 Route::get('transaksi', 'Api\TransaksiController@index');
+// Route::get('getreratadrivertrans', 'Api\TransaksiController@getreratadriver');
 Route::get('transaksi/{id_transaksi}', 'Api\TransaksiController@show');
-Route::put('transaksi/{id_transaksi}', 'Api\TransaksiController@update');
+Route::get('showbycustomer/{id_transaksi}', 'Api\TransaksiController@showbycustomer');
+Route::get('showbycustomerOnProgress/{id_transaksi}', 'Api\TransaksiController@showbycustomerOnProgress');
+// Route::get('countTransaction/{id_transaksi}', 'Api\TransaksiController@countTransaction');
+Route::post('transaksi/{id_transaksi}', 'Api\TransaksiController@update');
 Route::delete('transaksi/{id_transaksi}', 'Api\TransaksiController@destroy');
 
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
