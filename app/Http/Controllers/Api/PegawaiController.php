@@ -8,6 +8,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Pegawai;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class PegawaiController extends Controller
 {
@@ -115,7 +116,7 @@ class PegawaiController extends Controller
             'tanggal_lahir_pegawai' => $request->tanggal_lahir_pegawai,
             'jenis_kelamin_pegawai' => $request->jenis_kelamin_pegawai,
             'no_telp_pegawai' => $request->no_telp_pegawai,
-            'password_pegawai' => bcrypt($request->tanggal_lahir_pegawai),
+            'password' => Hash::make($request->tanggal_lahir_pegawai),
             'url_foto_pegawai' => $fotoPegawai,
             'isAktif' => $request->isAktif,
         ]);
@@ -170,7 +171,7 @@ class PegawaiController extends Controller
                 'tanggal_lahir_pegawai' => 'required',
                 'jenis_kelamin_pegawai' => 'required',
                 'no_telp_pegawai' => 'required|numeric',
-                // 'password_pegawai',
+                // 'password',
                 'url_foto_pegawai' => 'max:1024|mimes:jpg,png,jpeg|image',
                 'isAktif' => 'required',
             ],
@@ -206,7 +207,7 @@ class PegawaiController extends Controller
         $pegawai->tanggal_lahir_pegawai = $updateData['tanggal_lahir_pegawai'];
         $pegawai->jenis_kelamin_pegawai = $updateData['jenis_kelamin_pegawai'];
         $pegawai->no_telp_pegawai = $updateData['no_telp_pegawai'];
-        // $pegawai->password_pegawai = $updateData['password_pegawai'];
+        // $pegawai->password = $updateData['password'];
         if (isset($request->url_foto_pegawai)) {
             $fotoPegawai = $request->url_foto_pegawai->store('foto_pegawai', ['disk' => 'public']);
             $pegawai->url_foto_pegawai = $fotoPegawai;

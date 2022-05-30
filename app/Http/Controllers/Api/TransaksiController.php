@@ -73,7 +73,7 @@ class TransaksiController extends Controller
         ], 404); // return message saat data detailjadwal tidka ditemukan
     }
 
-    public function showbycustomer($id)
+    public function showbycustomer($id_customer)
     {
         $transaksi = DB::table('transaksis')
             ->leftJoin('drivers', 'drivers.id_driver', '=', 'transaksis.id_driver')
@@ -81,14 +81,45 @@ class TransaksiController extends Controller
             ->leftJoin('mobils', 'mobils.id_mobil', '=', 'transaksis.id_mobil')
             ->leftJoin('pegawais', 'pegawais.id_pegawai', '=', 'transaksis.id_pegawai')
             ->leftJoin('promos', 'promos.id_promo', '=', 'transaksis.id_promo')
-            ->where('transaksis.id_customer', $id)
+            ->where('transaksis.id_customer', $id_customer)
+            // ->find($id_customer, 'transaksis.id_customer')
             ->where('transaksis.status_transaksi', '=', 'Sudah lunas (Selesai)')
+            ->orWhere('transaksis.status_transaksi', '=', 'Batal')
+            ->where('transaksis.id_customer', $id_customer)
             ->orderBy('transaksis.created_at', 'desc')
             ->get();
 
         if (!is_null($transaksi)) {
             return response([
-                'message' => 'Retrieve Transaksi Success',
+                'message' => 'Berhasil Menampilkan Riwayat Transaksi',
+                'data' => $transaksi
+            ], 200);
+        } // return data detailjadwal yang ditemukan dalam bentuk json
+
+        return response([
+            'message' => 'Transaksi Not Found',
+            'data' => null
+        ], 404); // return message saat data detailjadwal tidka ditemukan
+    }
+
+    public function showbydriver($id_driver)
+    {
+        $transaksi = DB::table('transaksis')
+            ->leftJoin('drivers', 'drivers.id_driver', '=', 'transaksis.id_driver')
+            ->leftJoin('customers', 'customers.id_customer', '=', 'transaksis.id_customer')
+            ->leftJoin('mobils', 'mobils.id_mobil', '=', 'transaksis.id_mobil')
+            ->leftJoin('pegawais', 'pegawais.id_pegawai', '=', 'transaksis.id_pegawai')
+            ->leftJoin('promos', 'promos.id_promo', '=', 'transaksis.id_promo')
+            ->where('transaksis.id_driver', $id_driver)
+            ->where('transaksis.status_transaksi', '=', 'Sudah lunas (Selesai)')
+            ->orWhere('transaksis.status_transaksi', '=', 'Batal')
+            ->where('transaksis.id_driver', $id_driver)
+            ->orderBy('transaksis.created_at', 'desc')
+            ->get();
+
+        if (!is_null($transaksi)) {
+            return response([
+                'message' => 'Berhasil Menampilkan Riwayat Transaksi',
                 'data' => $transaksi
             ], 200);
         } // return data detailjadwal yang ditemukan dalam bentuk json
@@ -108,7 +139,8 @@ class TransaksiController extends Controller
             ->leftJoin('pegawais', 'pegawais.id_pegawai', '=', 'transaksis.id_pegawai')
             ->leftJoin('promos', 'promos.id_promo', '=', 'transaksis.id_promo')
             ->where('transaksis.id_customer', $id)
-            ->whereNot('transaksis.status_transaksi', '=', 'Sudah lunas (Selesai)')
+            ->WhereNot('transaksis.status_transaksi', '=', 'Sudah lunas (Selesai)')
+            ->WhereNot('transaksis.status_transaksi', '=', 'Batal')
             ->orderBy('transaksis.created_at', 'desc')
             ->get();
 
@@ -155,8 +187,8 @@ class TransaksiController extends Controller
         }
         $count = DB::table('transaksis')->count() + 1;
         $id_generate = sprintf("%03d", $count);
-        $datenow = Carbon::now()->format('ymd');
         $transactionDate = Carbon::now()->format('Y-m-d G:i:s');
+        $datenow = Carbon::now()->format('ymd');
         if (($request->id_driver) === NULL) {
             $kode_pinjam = sprintf("00");
         } else {
@@ -229,17 +261,38 @@ class TransaksiController extends Controller
             return response(['message' => $validate->errors()], 400);
 
         $transactionDate = Carbon::now()->format('Y-m-d G:i:s');
-
-        if (isset($transaksi->id_driver)) {
+        // $count = DB::table('transaksis')->count() + 1;
+        // $id_generate = sprintf("%03d", $count);
+        // $datenow = Carbon::now()->format('ymd');
+        // if (($request->id_driver) === NULL) {
+        //     $kode_pinjam = sprintf("00");
+        // } else {
+        //     $kode_pinjam = sprintf("01");
+        // }
+        // $transaksi->id_transaksi = 'TRN' . $datenow . $kode_pinjam . '-' . $id_generate;
+        // if ($request->id_driver != '') {
+        //     $transaksi->id_driver = $updateData['id_driver'];
+        // }
+        if (isset($request->id_driver)) {
             $transaksi->id_driver = $updateData['id_driver'];
+        } else {
+            $transaksi->id_driver = null;
         }
         // $transaksi->id_driver = $updateData['id_driver'];
         $transaksi->id_customer = $updateData['id_customer'];
         $transaksi->id_mobil = $updateData['id_mobil'];
         // $transaksi->id_pegawai = $updateData['id_pegawai'];
-        if (isset($transaksi->id_promo)) {
+        // if ($request->id_promo != null) {
+        //     $transaksi->id_promo = $updateData['id_promo'];
+        // }
+        if (isset($request->id_promo)) {
             $transaksi->id_promo = $updateData['id_promo'];
+        } else {
+            $transaksi->id_promo = null;
         }
+        // else {
+        //     $transaksi->id_promo = '0';
+        // }
         // $transaksi->id_promo = $updateData['id_promo'];
         $transaksi->tanggal_transaksi = $transactionDate;
         // $transaksi->tanggal_pengembalian = $updateData['tanggal_pengembalian'];

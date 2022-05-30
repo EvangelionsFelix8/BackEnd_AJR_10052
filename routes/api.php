@@ -14,6 +14,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::post('login', 'Api\AuthController@login');
+
+
 Route::post('role', 'Api\RoleController@store');
 Route::get('role', 'Api\RoleController@index');
 Route::get('role/{id_role}', 'Api\RoleController@show');
@@ -56,12 +59,15 @@ Route::delete('pegawai/{id_pegawai}', 'Api\PegawaiController@destroy');
 Route::post('driver', 'Api\DriverController@store');
 Route::get('driver', 'Api\DriverController@index');
 Route::get('getreratadriver', 'Api\DriverController@getreratadriver');
+Route::get('getreratadriverbyid/{id_driver}', 'Api\DriverController@getreratadriverbyId');
 Route::get('getreratadriverfortable', 'Api\DriverController@getreratadriverfortable');
 Route::get('showbystatusketersediaan', 'Api\DriverController@showByStatusKeter');
 Route::get('showbyaktifdriver', 'Api\DriverController@showByAktif');
 Route::get('driver/{id_driver}', 'Api\DriverController@show');
 Route::post('driver/{id_driver}', 'Api\DriverController@update');
+Route::put('updatedriver/{id_driver}', 'Api\DriverController@updatedrivermobile');
 Route::post('updateberkasdriver/{id_driver}', 'Api\DriverController@updateBerkas');
+Route::put('updateketersediaandriver/{id_driver}', 'Api\DriverController@updateStatusKetersediaanbyid');
 Route::delete('driver/{id_driver}', 'Api\DriverController@destroy');
 
 Route::post('mitra', 'Api\MitraController@store');
@@ -85,6 +91,7 @@ Route::get('customer', 'Api\CustomerController@index');
 Route::get('customer/{id_customer}', 'Api\CustomerController@show');
 Route::get('countTransaction/{id_customer}', 'Api\CustomerController@countTransaction');
 Route::get('countTransactionDone/{id_customer}', 'Api\CustomerController@countTransactionDone');
+Route::get('countTransactionBatal/{id_customer}', 'Api\CustomerController@countTransactionBatal');
 Route::post('customer/{id_customer}', 'Api\CustomerController@update');
 Route::post('updateberkascustomer/{id_customer}', 'Api\CustomerController@updateBerkas');
 Route::delete('customer/{id_customer}', 'Api\CustomerController@destroy');
@@ -97,11 +104,18 @@ Route::post('setStatus/{id_transaksi}', 'Api\TransaksiController@updateStatus');
 Route::get('transaksi', 'Api\TransaksiController@index');
 // Route::get('getreratadrivertrans', 'Api\TransaksiController@getreratadriver');
 Route::get('transaksi/{id_transaksi}', 'Api\TransaksiController@show');
-Route::get('showbycustomer/{id_transaksi}', 'Api\TransaksiController@showbycustomer');
-Route::get('showbycustomerOnProgress/{id_transaksi}', 'Api\TransaksiController@showbycustomerOnProgress');
+Route::get('showbycustomer/{id_customer}', 'Api\TransaksiController@showbycustomer');
+Route::get('showbydriver/{id_driver}', 'Api\TransaksiController@showbydriver');
+Route::get('showbycustomerOnProgress/{id_customer}', 'Api\TransaksiController@showbycustomerOnProgress');
 // Route::get('countTransaction/{id_transaksi}', 'Api\TransaksiController@countTransaction');
 Route::post('transaksi/{id_transaksi}', 'Api\TransaksiController@update');
 Route::delete('transaksi/{id_transaksi}', 'Api\TransaksiController@destroy');
+
+Route::get('laporanpenyewaan/{tanggal_mulai}/{tanggal_selesai}', 'Api\LaporanController@LaporanPenyewaanMobil');
+Route::get('laporandetailpendapatan/{tanggal_mulai}/{tanggal_selesai}', 'Api\LaporanController@LaporanDetailPendapatan');
+Route::get('laporan5driverteratas/{tanggal_mulai}/{tanggal_selesai}', 'Api\LaporanController@Laporan5DriverTransaksiTeratas');
+Route::get('Laporanperformadriver/{tanggal_mulai}/{tanggal_selesai}', 'Api\LaporanController@LaporanPerformaDriver');
+Route::get('Laporan5terajin/{tanggal_mulai}/{tanggal_selesai}', 'Api\LaporanController@Laporan5CustomerTerbanyak');
 
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();

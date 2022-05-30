@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\Customer;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class CustomerController extends Controller
 {
@@ -70,6 +71,29 @@ class CustomerController extends Controller
         ], 404); // return message saat data detailjadwal tidka ditemukan
     }
 
+    public function countTransactionBatal($id)
+    {
+        $customer = DB::table('customers')
+            ->join('transaksis', 'transaksis.id_customer', '=', 'customers.id_customer')
+            ->selectRaw("COUNT(transaksis.id_customer) as jumlah")
+            ->groupBy('customers.id_customer')
+            ->where('transaksis.id_customer', '=', $id)
+            ->where('status_transaksi', '=', 'Batal')
+            ->count();
+
+        if (!is_null($customer)) {
+            return response([
+                'message' => 'Retrieve Transaksi Success',
+                'data' => $customer
+            ], 200);
+        } // return data detailjadwal yang ditemukan dalam bentuk json
+
+        return response([
+            'message' => 'Customer Not Found',
+            'data' => null
+        ], 404); // return message saat data detailjadwal tidka ditemukan
+    }
+
     public function countTransactionDone($id)
     {
         $customer = DB::table('customers')
@@ -105,7 +129,7 @@ class CustomerController extends Controller
             // 'password' => 'required',
             'no_telp_customer' => 'required|numeric|starts_with:08',
             // 'status_berkas' => 'required',
-            'no_tanda_pengenal' => 'required|max:1024|mimes:jpg,png,jpeg|image',
+            'no_tanda_pengenal' => 'required',
             'no_sim' => 'max:1024|mimes:jpg,png,jpeg|image',
         ], [], [
             'nama_customer' => 'Nama Customer',
@@ -118,12 +142,14 @@ class CustomerController extends Controller
             'no_sim' => 'Foto SIM',
         ]); //Membuat rule validasi input
 
-        $err_message = array(array('Pastikan Field Terisi Semuanya'));
+        $err_message = array(array('Pastikan Field Terisi Semuanya (Kecuali SIM (jika tidak Punya))'));
 
+        error_log($request->no_tanda_pengenal);
         if (
             $request->nama_customer === 'null' || $request->alamat_customer === 'null' || $request->tanggal_lahir_customer === 'null' ||
             $request->jenis_kelamin === 'null' || $request->email_customer === 'null' ||
-            $request->no_telp_customer === 'null' || $request->no_tanda_pengenal === 'null'
+            $request->no_telp_customer === 'null' || $request->no_tanda_pengenal == "undefined"
+
         ) {
             return response(['message' => $err_message], 400);
         }
@@ -151,7 +177,7 @@ class CustomerController extends Controller
             'tanggal_lahir_customer' => $request->tanggal_lahir_customer,
             'jenis_kelamin' => $request->jenis_kelamin,
             'email_customer' => $request->email_customer,
-            'password' => bcrypt($request->tanggal_lahir_customer),
+            'password' => Hash::make($request->tanggal_lahir_customer),
             'no_telp_customer' => $request->no_telp_customer,
             'status_berkas' => 'Not Verified',
             'no_tanda_pengenal' => $fotoTandaPengenal,

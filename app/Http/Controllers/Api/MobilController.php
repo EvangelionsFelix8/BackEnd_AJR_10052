@@ -101,7 +101,7 @@ class MobilController extends Controller
 
         if (count($mobils) > 0) {
             return response([
-                'message' => 'Retrieve All Success',
+                'message' => 'Berhasil Menampilkan Mobil',
                 'data' => $mobils
             ], 200); // return data semua mobil dalam bentuk json
         }

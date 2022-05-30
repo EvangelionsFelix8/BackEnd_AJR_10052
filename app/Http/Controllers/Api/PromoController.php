@@ -35,7 +35,7 @@ class PromoController extends Controller
 
         if (count($promos) > 0) {
             return response([
-                'message' => 'Retrieve All Success',
+                'message' => 'Berhasil Menampilkan Promo',
                 'data' => $promos
             ], 200); // return data semua promo dalam bentuk json
         }

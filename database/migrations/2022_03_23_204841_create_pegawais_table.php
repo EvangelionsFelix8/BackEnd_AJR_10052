@@ -23,7 +23,7 @@ return new class extends Migration
             $table->date('tanggal_lahir_pegawai');
             $table->string('jenis_kelamin_pegawai', 30);
             $table->string('no_telp_pegawai', 30);
-            $table->string('password_pegawai');
+            $table->string('password');
             $table->string('url_foto_pegawai')->nullable();
             $table->boolean('isAktif');
             $table->timestamps();

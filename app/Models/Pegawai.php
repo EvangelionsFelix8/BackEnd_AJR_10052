@@ -20,7 +20,7 @@ class Pegawai extends Model
         'tanggal_lahir_pegawai',
         'jenis_kelamin_pegawai',
         'no_telp_pegawai',
-        'password_pegawai',
+        'password',
         'url_foto_pegawai',
         'isAktif',
     ];
