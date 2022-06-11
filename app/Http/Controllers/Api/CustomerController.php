@@ -299,6 +299,37 @@ class CustomerController extends Controller
         ], 400); // return message saat detailjadwal gagal di edit
     }
 
+    public function updatePassword(Request $request, $id)
+    {
+        $customer = Customer::find($id);
+
+        if (is_null($customer)) {
+            return response([
+                'message' => 'Customer Not Found',
+                'data' => null
+            ], 404); // Return message saat data tidak ditemukan
+        }
+
+        $updateData = $request->all();
+
+        // if (isset($request->status_berkas)) {
+        $customer->password = Hash::make($updateData['password']);
+        // }
+
+
+        if ($customer->save()) {
+            return response([
+                'message' => 'Berhasil Mengganti Password',
+                'data' => $customer
+            ], 200);
+        }
+
+        return response([
+            'message' => 'Update Customer Failed',
+            'data' => null,
+        ], 400); // return message saat detailjadwal gagal di edit
+    }
+
     public function destroy($id)
     {
         $customer = Customer::find($id);

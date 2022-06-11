@@ -94,6 +94,7 @@ Route::get('countTransactionDone/{id_customer}', 'Api\CustomerController@countTr
 Route::get('countTransactionBatal/{id_customer}', 'Api\CustomerController@countTransactionBatal');
 Route::post('customer/{id_customer}', 'Api\CustomerController@update');
 Route::post('updateberkascustomer/{id_customer}', 'Api\CustomerController@updateBerkas');
+Route::put('updatepassword/{id_customer}', 'Api\CustomerController@updatePassword');
 Route::delete('customer/{id_customer}', 'Api\CustomerController@destroy');
 
 Route::post('transaksi', 'Api\TransaksiController@store');

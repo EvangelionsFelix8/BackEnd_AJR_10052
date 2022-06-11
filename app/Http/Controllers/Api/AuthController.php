@@ -83,7 +83,8 @@ class AuthController extends Controller
             } else {
                 return response([
                     'message' => 'Password Anda salah',
-                ]);
+                    'data' => $driver
+                ], 400);
             }
             $token = bcrypt($randomString);
             return response([
@@ -112,6 +113,7 @@ class AuthController extends Controller
                     'data' => $pegawai
                 ], 400);
             }
+
             $token = bcrypt($randomString);
             return response([
                 'message' => 'Berhasil Login ',
