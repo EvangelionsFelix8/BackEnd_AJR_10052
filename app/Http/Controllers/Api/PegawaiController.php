@@ -74,7 +74,7 @@ class PegawaiController extends Controller
             [
                 'nama_pegawai' => 'required|regex:/^[\pL\s\-]+$/u',
                 'alamat_pegawai' => 'required',
-                'email_pegawai' => 'required|email:rfc,dns|unique:Pegawais',
+                'email_pegawai' => 'required|email:rfc,dns|unique:pegawais',
                 'tanggal_lahir_pegawai' => 'required',
                 'jenis_kelamin_pegawai' => 'required',
                 'no_telp_pegawai' => 'required|numeric|starts_with:08',
